@@ -1,0 +1,26 @@
+<h1><%= @user.username %></h1>
+<p>My channel ARN: <%= @user.channel_arn %></p>
+<p>My playback URL: <%= @user.playback_url %></p>
+<p>My super secret stream key: <%= @user.stream_key.value %></p>
+<%= turbo_frame_tag("ivs_player") do %>
+  <script src="https://player.live-video.net/1.24.0/amazon-ivs-player.min.js"></script>
+  <div id="amazon-ivs">
+    <video id="ivs-video"
+      autoplay
+      controls
+      playsinline
+      style="max-height: 500px; max-width: 500px"
+    ></video>
+  </div>
+  <script>
+    const url="<%= @user.playback_url %>"
+    if (!IVSPlayer.isPlayerSupported) {
+      alert("Your browser does not support the Amazon IVS player.");
+    }
+    const player = IVSPlayer.create();
+    const video_target = document.getElementById("ivs-video");
+    player.attachHTMLVideoElement(video_target);
+    player.load(url);
+    player.play();
+  </script>
+<% end %>
